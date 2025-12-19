@@ -14,7 +14,7 @@ const LocaleSelector = () => {
       <Globe className="text-gray-400 " />
       <select className="select cursor-pointer" onChange={handleChange} defaultValue={language}>
         {locales.map((locale) => (
-          <option value={locale.value}>{locale.label}</option>
+          <option key={locale.value} value={locale.value}>{locale.label}</option>
         ))}
       </select>
     </div>

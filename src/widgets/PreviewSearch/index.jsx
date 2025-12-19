@@ -57,7 +57,7 @@ export const PreviewSearchComponent = ({ defaultItemsPerPage = 6 }) => {
         <Spinner loading={loading} />
 
         <Presence present={!loading}>
-          <>
+          <div className="flex flex-row w-full">
             {articleSuggestions.length > 0 && (
               <PreviewSearch.Suggestions className="block box-border list-none w-[16rem] text-sm">
                 <SuggestionBlock blockId={'title_context_aware'} items={articleSuggestions} title={'Suggestions'} />
@@ -98,7 +98,7 @@ export const PreviewSearchComponent = ({ defaultItemsPerPage = 6 }) => {
                 </PreviewSearch.Items>
               )}
             </PreviewSearch.Results>
-          </>
+          </div>
         </Presence>
       </PreviewSearch.Content>
     </PreviewSearch.Root>
