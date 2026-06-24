@@ -1,12 +1,15 @@
-import { useSearchResultsActions } from '@sitecore-search/react';
+import { useSearchResultsActions } from '@/sdk.js';
 import { Select, SortSelect } from '@sitecore-search/ui';
 import PropTypes from 'prop-types';
+
+const itemClass =
+  'flex rounded-md items-center leading-none cursor-pointer select-none h-7 px-2 mx-0.5 text-sm text-peoplecert-navy dark:text-gray-100 hover:bg-peoplecert-surface dark:hover:bg-peoplecert-navy-500 data-[state=checked]:bg-peoplecert-orange-50 dark:data-[state=checked]:bg-peoplecert-navy-300 data-[state=checked]:text-peoplecert-orange focus:outline-none';
 
 const ResultsPerPage = ({ defaultItemsPerPage }) => {
   const { onResultsPerPageChange } = useSearchResultsActions();
   return (
-    <div>
-      <label className="pr-1">Results Per Page</label>
+    <div className="flex items-center gap-2 text-sm">
+      <label className="text-peoplecert-muted dark:text-gray-400">Results per page</label>
       <Select.Root
         defaultValue={String(defaultItemsPerPage)}
         onValueChange={(v) =>
@@ -15,32 +18,17 @@ const ResultsPerPage = ({ defaultItemsPerPage }) => {
           })
         }
       >
-        <Select.Trigger className="cursor-pointer inline-flex items-center bg-transparent h-10 gap-1 py-1 px-4 border-0 focus:outline-gray-700">
+        <Select.Trigger className="cursor-pointer inline-flex items-center gap-1 h-9 py-1 px-3 text-sm font-medium text-peoplecert-navy dark:text-gray-100 bg-white dark:bg-peoplecert-navy-400 border border-peoplecert-border dark:border-peoplecert-navy-300 rounded-md hover:border-peoplecert-orange transition-colors focus:outline-none">
           <Select.SelectValue />
           <Select.Icon />
         </Select.Trigger>
-        <Select.SelectContent className="bg-gray-100 dark:bg-gray-700 shadow-[2px_2px_4px_#CFCFCF] z-[100] min-w-[100px] rounded-md ">
+        <Select.SelectContent className="bg-white dark:bg-peoplecert-navy-400 shadow-card-lg border border-peoplecert-border dark:border-peoplecert-navy-300 z-[100] min-w-[100px] rounded-lg overflow-hidden">
           <Select.Viewport className="p-1">
-            <Select.SelectItem
-              value="10"
-              className="flex rounded-sm items-center leading-none cursor-pointer select-none whitespace-no-wrap h-6 px-1 hover:bg-gray-700 hover:text-gray-100  dark:hover:bg-gray-100 dark:hover:text-gray-700  data-[state=checked]:text-gray-700 data-[state=checked]:bg-gray-100  dark:data-[state=checked]:text-gray-100 dark:data-[state=checked]:bg-gray-700 focus:outline-gray-700"
-            >
-              <SortSelect.OptionText>10</SortSelect.OptionText>
-            </Select.SelectItem>
-
-            <Select.SelectItem
-              value="25"
-              className="flex rounded-sm items-center leading-none cursor-pointer select-none whitespace-no-wrap h-6 px-1 hover:bg-gray-700 hover:text-gray-100  dark:hover:bg-gray-100 dark:hover:text-gray-700  data-[state=checked]:text-gray-700 data-[state=checked]:bg-gray-100  dark:data-[state=checked]:text-gray-100 dark:data-[state=checked]:bg-gray-700 focus:outline-gray-700"
-            >
-              <SortSelect.OptionText>25</SortSelect.OptionText>
-            </Select.SelectItem>
-
-            <Select.SelectItem
-              value="50"
-              className="flex rounded-sm items-center leading-none cursor-pointer select-none whitespace-no-wrap h-6 px-1 hover:bg-gray-700 hover:text-gray-100  dark:hover:bg-gray-100 dark:hover:text-gray-700  data-[state=checked]:text-gray-700 data-[state=checked]:bg-gray-100  dark:data-[state=checked]:text-gray-100 dark:data-[state=checked]:bg-gray-700 focus:outline-gray-700"
-            >
-              <SortSelect.OptionText>50</SortSelect.OptionText>
-            </Select.SelectItem>
+            {['10', '25', '50'].map((v) => (
+              <Select.SelectItem key={v} value={v} className={itemClass}>
+                <SortSelect.OptionText>{v}</SortSelect.OptionText>
+              </Select.SelectItem>
+            ))}
           </Select.Viewport>
         </Select.SelectContent>
       </Select.Root>

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import locales from '@/data/locales';
 import useStorage from '@/hooks/useStorage.js';
-import { PageController } from '@sitecore-search/react';
+import { PageController } from '@/sdk.js';
 
 /**
  * Custom hook for managing the language state.

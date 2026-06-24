@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { ENTITY_CONTENT, PAGE_EVENTS_DEFAULT, PAGE_EVENTS_PDP } from '@/data/constants';
-import { PageController, trackEntityPageViewEvent, trackPageViewEvent } from '@sitecore-search/react';
+import { PageController, trackEntityPageViewEvent, trackPageViewEvent } from '@/sdk.js';
 
 import useUri from '@/hooks/useUri.jsx';
 

@@ -1,33 +1,36 @@
-[{
-  "mainTitle": "SaaS DXP Products",
-  "items": ["XM Cloud",
-    "Content Hub ONE",
-    "Content Hub DAM",
-    "Content Hub Operations",
-    "Search",
-    "Customer Data Platform",
-    "Personalize",
-    "Send",
-    "Connect",
-    "Discover",
-    "OrderCloud"]
-},{
-  "mainTitle": "Platform DXP Products",
-  "items": ["Experience Manager",
-    "Experience Platform",
-    "Managed Cloud"]
-}, {
-  "mainTitle": "Resources",
-  "items": ["Training",
-    "Insights blog",
-    "Developer resources",
-    "What's new"]
-}, {
-  "mainTitle": "Company",
-  "items": ["Newsroom",
-    "Contact us",
-    "Office locations",
-    "Careers",
-    "Legal & Trust",
-    "Sitecore brand resources"]
-}]
+[
+  {
+    "mainTitle": "Help Center",
+    "items": [
+      "Browse all topics",
+      "Popular questions",
+      "Exam day guide",
+      "Candidate support",
+      "Contact support"
+    ]
+  },
+  {
+    "mainTitle": "Certifications",
+    "items": ["ITIL", "PRINCE2", "DevOps Institute", "LanguageCert", "Lean Six Sigma"]
+  },
+  {
+    "mainTitle": "My Account",
+    "items": [
+      "My certifications",
+      "Exam bookings",
+      "Download certificate",
+      "Invoices & payments",
+      "Profile settings"
+    ]
+  },
+  {
+    "mainTitle": "Legal",
+    "items": [
+      "Privacy Policy",
+      "Cookie Policy",
+      "Terms of Service",
+      "Modern Slavery Statement",
+      "Candidate Agreement"
+    ]
+  }
+]

@@ -1,10 +1,14 @@
 import { ArrowLeftIcon, ArrowRightIcon } from '@radix-ui/react-icons';
-import { useSearchResultsActions } from '@sitecore-search/react';
+import { useSearchResultsActions } from '@/sdk.js';
 import { Pagination } from '@sitecore-search/ui';
 import PropTypes from 'prop-types';
 
+const pageClass =
+  'cursor-pointer inline-flex items-center justify-center min-w-[36px] h-9 px-2 mx-0.5 rounded-md text-sm font-medium text-peoplecert-navy dark:text-gray-200 hover:bg-peoplecert-surface dark:hover:bg-peoplecert-navy-400 data-[current=true]:bg-peoplecert-orange data-[current=true]:text-white data-[current=true]:pointer-events-none focus:outline-none focus-visible:ring-2 focus-visible:ring-peoplecert-orange-200';
+
 const SearchPagination = ({ currentPage, totalPages }) => {
   const { onPageNumberChange } = useSearchResultsActions();
+  if (totalPages <= 1) return null;
   return (
     <Pagination.Root
       currentPage={currentPage}
@@ -15,11 +19,11 @@ const SearchPagination = ({ currentPage, totalPages }) => {
           page: v,
         })
       }
-      className="mt-4 flex"
+      className="mt-6 flex items-center justify-center"
     >
       <Pagination.PrevPage
         onClick={(e) => e.preventDefault()}
-        className="cursor-pointer my-0 mx-2 data-[current=true]:hidden hover:text-gray-700 focus:outline-gray-700 dark:hover:text-gray-400 dark:focus:outline-gray-400"
+        className={`${pageClass} data-[current=true]:hidden`}
       >
         <ArrowLeftIcon />
       </Pagination.PrevPage>
@@ -35,19 +39,21 @@ const SearchPagination = ({ currentPage, totalPages }) => {
                 aria-label={`Page ${page}`}
                 page={page}
                 onClick={(e) => e.preventDefault()}
-                className="cursor-pointer my-0 mx-2 data-[current=true]:text-gray-700 dark:data-[current=true]:text-gray-400 data-[current=true]:pointer-events-none data-[current=true]:no-underline hover:text-gray-700 focus:outline-gray-700 dark:hover:text-gray-400 dark:focus:outline-gray-400"
+                className={pageClass}
               >
                 {page}
               </Pagination.Page>
             ) : (
-              <span key={type}>...</span>
+              <span key={type} className="px-2 text-peoplecert-muted">
+                ...
+              </span>
             ),
           )
         }
       </Pagination.Pages>
       <Pagination.NextPage
         onClick={(e) => e.preventDefault()}
-        className="cursor-pointer my-0 mx-2 data-[current=true]:hidden hover:text-gray-700 focus:outline-gray-700 dark:hover:text-gray-400 dark:focus:outline-gray-400"
+        className={`${pageClass} data-[current=true]:hidden`}
       >
         <ArrowRightIcon />
       </Pagination.NextPage>
@@ -58,6 +64,6 @@ const SearchPagination = ({ currentPage, totalPages }) => {
 SearchPagination.propTypes = {
   currentPage: PropTypes.number.isRequired,
   totalPages: PropTypes.number.isRequired,
-}
+};
 
 export default SearchPagination;

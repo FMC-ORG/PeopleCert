@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
-import { usePreviewSearchActions } from '@sitecore-search/react';
+import { usePreviewSearchActions } from '@/sdk.js';
 import { PreviewSearch } from '@sitecore-search/ui';
 import PropTypes from 'prop-types';
 

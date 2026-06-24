@@ -1,24 +1,29 @@
-<p align="center">
-  <a href="https://www.sitecore.com/">
-    <img src="https://wwwsitecorecom.azureedge.net/-/media/sitecoresite/images/global/logo/sitecore-logo.svg?la=es-ES&hash=89E5BCF25116F0D8B53F53F0E3D33A0E" alt="RBE logo" target="_blank" width="200" height="165">
-  </a>
-</p>
-<h3 align="center">Sitecore Search Starter Kit</h3>
+<h3 align="center">PeopleCert Self-Service Portal — Sitecore Search Demo</h3>
 
 <p align="center">
- A website built using React + Sitecore Search SDK for React
-  <br>
-  <a href="https://developers.sitecorecloud.io/search-sdk/react/website" target="_blank"><strong>Demo »</strong></a>
+ A PeopleCert-branded self-service support portal demo built on top of the Sitecore Search JS SDK for React.
   <br>
   <br>
 
-# Sitecore Search Starter Kit
+# PeopleCert Self-Service Portal (Demo)
 
-This repository has an example implementation of a content website using the `Sitecore Search JS SDK` which
-integrates with Sitecore Search services and supports event tracking.
+This repository is a customer-demo fork of the Sitecore Search JS SDK starter kit, re-skinned
+and re-information-architected as a **PeopleCert Support Center**. It showcases five core
+capabilities that a modern self-service portal needs:
+
+1. **Self-service support experience** — Help-Center home, big search, intent tiles, AI answer, deflection CTAs.
+2. **Strong search relevance** — Predictive PreviewSearch, faceted SearchResults, sort, active-filter chips.
+3. **Consistent answers across channels** — one AI Answer, one result set, one article page, all from the same index.
+4. **Single-source-of-truth architecture** — every surface queries the same Sitecore Search domain; an optional dev overlay proves it.
+5. **Future extensibility** — role/audience switcher, language selector, and well-scoped widgets ready for RAG, Personalize, or a chat assistant.
+
+All Sitecore Search widget IDs from the original starter kit are preserved (`rfkid_6`,
+`rfkid_7`, `rfkid_qa`, `search_seo`, `home_hero`, `highlight_title`, `faqs_title`,
+`search_home_highlights_articles`), so no CEC configuration changes are required.
 
 ## Table of contents
 
+- [Demo script](#demo-script)
 - [Prerequisites](#prerequisites)
 - [Quick start](#quick-start)
 - [Pages](#Pages)
@@ -27,7 +32,73 @@ integrates with Sitecore Search services and supports event tracking.
     - [Content detail page](#Content-detail-page)
 - [Events](#Events)
     - [Monitoring example](#Monitoring-example)
+- [Future extensibility](#future-extensibility)
 - [Documentation](#learn-more)
+
+## Demo script
+
+The demo is designed to be walked through in 5–7 minutes. Each pillar maps to a specific
+surface in the app; the checklist below is the recommended talk track.
+
+### 1. Self-service support experience — Home (`/`)
+
+- Open the app. You land on the **PeopleCert Support Center** hero.
+- Point out:
+  - Role-aware headline ("How can we help, professional?") — the audience switcher in the hero and in the top bar drives this and sets a `PageController` attribute that CEC relevance rules can target.
+  - A big **PreviewSearch** input with example questions below it (the `rfkid_6` widget).
+  - **Browse by topic** intent tiles — deep-link directly into `/search` with pre-applied keyphrases.
+  - **Most-asked questions** (the `rfkid_qa` Questions widget, restyled as an accordion of Q&As generated from the knowledge base).
+  - **Popular solutions** — trending articles (`search_home_highlights_articles`).
+  - **Still need help?** deflection CTA to human support.
+
+### 2. Strong search relevance — Header PreviewSearch & `/search`
+
+- Type a question in the hero or top-bar input (e.g. *"How do I reschedule my ITIL exam?"*).
+- Point out:
+  - Suggestions appear in real time (Sitecore's suggestion blocks).
+  - Submit the query to reach `/search`.
+  - Facets on the left (content type, certification, language, audience) narrow the result set.
+  - Active-filter chips, sort selector, and results-per-page controls.
+  - Zero-result state: a clean deflection panel with "Contact support".
+
+### 3. Consistent answers across channels — AI Answer on `/search`
+
+- On `/search?q=...`, the **AI Answer** card sits above the result list:
+  - It is powered by the same `rfkid_qa` widget used on the home page — one Q&A surface, multiple placements.
+  - A **Sources** strip shows 2–3 citations that link back to articles in the same index.
+  - The `People also ask` accordion exposes related questions.
+- Demo narrative: *"the same index answers the question, feeds the results grid, and backs the detail page — candidates get one answer, whether they asked, browsed, or followed a citation."*
+
+### 4. Single source of truth — click any citation → `/detail/:id`
+
+- Click one of the AI Answer sources. You land on the article detail page:
+  - Breadcrumb is derived from the article's `type` so users can navigate back up.
+  - The article body is the canonical source the AI used.
+  - **Was this helpful?** dispatches a custom event (see §6) so feedback improves relevance.
+  - **Related articles** at the bottom use the same index with a filter on the article's type.
+- Demo narrative: *"there is no separate help-desk CMS, no duplicate content, and no second search index. Everything the portal shows comes from the Sitecore Search domain you already configured."*
+
+### 5. Future extensibility — audience switcher and `?debug=1`
+
+- Toggle the **audience switcher** (Professional / Organization / Partner) in the hero or top bar.
+  - The hook writes the choice to `PageController.getContext().setAttribute('audience', ...)`.
+  - A CEC relevance rule or a Sitecore Personalize integration can read this attribute to re-rank results.
+- Append `?debug=1` to any URL to reveal the **Sitecore Search event monitor** in the bottom-right.
+  - Every API call the SDK makes is shown with method, endpoint, status and latency.
+  - Custom events (e.g. the article-feedback event) appear as `CUSTOM` entries.
+  - Use this to prove that **all surfaces go through a single telemetry funnel** into CEC analytics.
+
+## Future extensibility
+
+The codebase is structured so these additions are drop-in, with no rework of the existing widgets:
+
+| Area | What to add | Where it plugs in |
+|---|---|---|
+| True RAG / generative answers | Replace the `rfkid_qa` AI Answer card with a server route calling an LLM (e.g. OpenAI / Anthropic) seeded with the top-N `SearchResults` passages. | `src/widgets/QuestionsAnswers/` swap-in (keep the same `AiAnswerCard` shell with `Sources`). |
+| Personalize | Read the `audience` attribute set by `useAudience` and boost/segment content in CEC or via Sitecore Personalize decisioning. | `src/hooks/useAudience.js`. |
+| Chat assistant | Mount an ai12z-style assistant on every page; let it call the same `useSearchResults` hook for retrieval. | `src/App.jsx` below the Router. |
+| Multi-source federation | Add CEC sources for product pages, policies, service-desk KB; expose them as a `source` facet. | `src/widgets/components/SearchFacets/`. |
+| Analytics | Pipe the `pc:feedback` custom event (fired by `WasThisHelpful`) into your data warehouse or Sitecore CDP. | `src/components/WasThisHelpful/`. |
 
 ## Prerequisites
 ### Node.js

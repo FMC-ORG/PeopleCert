@@ -1,4 +1,4 @@
-import { useSearchResultsActions } from '@sitecore-search/react';
+import { useSearchResultsActions } from '@/sdk.js';
 import { SortSelect } from '@sitecore-search/ui';
 import PropTypes from 'prop-types';
 
@@ -7,19 +7,20 @@ const SortOrder = ({ options, selected }) => {
   const { onSortChange } = useSearchResultsActions();
   return (
     <SortSelect.Root defaultValue={options[selectedSortIndex]?.name} onValueChange={onSortChange}>
-      <SortSelect.Trigger className="cursor-pointer inline-flex items-center bg-transparent h-10 gap-1 py-1 px-4 border-0 focus:outline-gray-700">
+      <SortSelect.Trigger className="cursor-pointer inline-flex items-center gap-1.5 h-9 py-1 px-3 text-sm font-medium text-peoplecert-navy dark:text-gray-100 bg-white dark:bg-peoplecert-navy-400 border border-peoplecert-border dark:border-peoplecert-navy-300 rounded-md hover:border-peoplecert-orange transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-peoplecert-orange-200">
+        <span className="text-peoplecert-muted dark:text-gray-400 text-xs">Sort:</span>
         <SortSelect.SelectValue>
           {selectedSortIndex > -1 ? options[selectedSortIndex].label : ''}
         </SortSelect.SelectValue>
         <SortSelect.Icon />
       </SortSelect.Trigger>
-      <SortSelect.Content className="bg-gray-100 dark:bg-gray-700 shadow-[2px_2px_4px_#CFCFCF] z-[100] absolute top-8 focus-within:border-gray-700 min-w-[150px] rounded-md">
+      <SortSelect.Content className="bg-white dark:bg-peoplecert-navy-400 shadow-card-lg border border-peoplecert-border dark:border-peoplecert-navy-300 z-[100] min-w-[180px] rounded-lg overflow-hidden">
         <SortSelect.Viewport className="p-1 z-[50000]">
           {options.map((option) => (
             <SortSelect.Option
               value={option}
               key={option.name}
-              className="flex rounded-sm items-center p-1 m-1 leading-none cursor-pointer select-none whitespace-no-wrap h-6 px-1 hover:bg-gray-700 dark:hover:bg-gray-100 hover:text-gray-100 dark:hover:text-gray-700 data-[state=checked]:text-gray-700 data-[state=checked]:bg-white focus:outline-gray-700"
+              className="flex rounded-md items-center px-2 py-1.5 m-0.5 text-sm leading-none cursor-pointer select-none hover:bg-peoplecert-surface dark:hover:bg-peoplecert-navy-500 text-peoplecert-navy dark:text-gray-100 data-[state=checked]:bg-peoplecert-orange-50 dark:data-[state=checked]:bg-peoplecert-navy-300 data-[state=checked]:text-peoplecert-orange focus:outline-none"
             >
               <SortSelect.OptionText>{option.label}</SortSelect.OptionText>
             </SortSelect.Option>
@@ -33,6 +34,6 @@ const SortOrder = ({ options, selected }) => {
 SortOrder.propTypes = {
   options: PropTypes.array.isRequired,
   selected: PropTypes.string.isRequired,
-}
+};
 
 export default SortOrder;

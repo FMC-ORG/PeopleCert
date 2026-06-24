@@ -1,8 +1,8 @@
+import { SlidersHorizontal } from 'lucide-react';
 import { useState } from 'react';
 
-import ArticleItemCard from '@/widgets/components/ArticleCard';
+import NoResultsRecovery from '@/components/NoResultsRecovery/index.jsx';
 import ArticleHorizontalItemCard from '@/widgets/components/ArticleHorizontalCard';
-import CardViewSwitcher from '@/widgets/components/CardViewSwitcher';
 import Filter from '@/widgets/components/Filter';
 import QueryResultsSummary from '@/widgets/components/QueryResultsSummary';
 import ResultsPerPage from '@/widgets/components/ResultsPerPage';
@@ -10,8 +10,7 @@ import SearchFacets from '@/widgets/components/SearchFacets';
 import SearchPagination from '@/widgets/components/SearchPagination';
 import SortOrder from '@/widgets/components/SortOrder';
 import Spinner from '@/widgets/components/Spinner';
-import { GridIcon, ListBulletIcon } from '@radix-ui/react-icons';
-import { WidgetDataType, useSearchResults, widget } from '@sitecore-search/react';
+import { WidgetDataType, useSearchResults, widget } from '@/sdk.js';
 import PropTypes from 'prop-types';
 
 export const SearchResultsComponent = ({
@@ -43,90 +42,83 @@ export const SearchResultsComponent = ({
     },
   });
   const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const defaultCardView = 'list';
-  const [dir, setDir] = useState(defaultCardView);
-  const onToggle = (value = defaultCardView) => setDir(value);
+  const [facetsOpen, setFacetsOpen] = useState(false);
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-screen w-full">
+      <div className="flex justify-center items-center py-24 w-full">
         <Spinner loading />
       </div>
     );
   }
+
   return (
-    <div ref={widgetRef}>
-      <div className="flex relative max-w-full px-4 text-black dark:text-gray-100 text-opacity-75">
-        {isFetching && (
-          <div className="w-full h-full fixed top-0 left-0 bottom-0 right-0 z-30 bg-white dark:bg-gray-800 opacity-50">
-            <div className="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] flex flex-col justify-center items-center z-40">
-              <Spinner loading />
-            </div>
+    <div ref={widgetRef} className="relative">
+      {isFetching && (
+        <div className="w-full h-full fixed top-0 left-0 bottom-0 right-0 z-30 bg-white/50 dark:bg-peoplecert-navy/50 pointer-events-none">
+          <div className="absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] flex flex-col justify-center items-center z-40">
+            <Spinner loading />
           </div>
-        )}
-        {totalItems > 0 && (
-          <>
-            <section className="flex flex-col flex-none relative mt-4 mr-8 w-[25%]">
+        </div>
+      )}
+
+      {totalItems > 0 && (
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Facets column */}
+          <aside
+            className={`${facetsOpen ? 'block' : 'hidden'} lg:block lg:w-[280px] shrink-0`}
+          >
+            <div className="pc-card p-5 sticky top-[96px]">
               <Filter />
-
               <SearchFacets facets={facets} />
-            </section>
-            <section className="flex flex-col flex-[4_1_0%]">
-              {/* Sort Select */}
-              <section className="flex justify-between text-xs">
-                {totalItems > 0 && (
-                  <QueryResultsSummary
-                    currentPage={page}
-                    itemsPerPage={itemsPerPage}
-                    totalItems={totalItems}
-                    totalItemsReturned={articles.length}
-                  />
-                )}
-                <div>
-                  <CardViewSwitcher
-                    onToggle={onToggle}
-                    defaultCardView={defaultCardView}
-                    GridIcon={GridIcon}
-                    ListIcon={ListBulletIcon}
-                  />
-                  <SortOrder options={sortChoices} selected={sortType} />
-                </div>
-              </section>
+            </div>
+          </aside>
 
-              {/* Results */}
-              {dir === 'grid' ? (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 md:gap-x-5 xl:gap-x-6 gap-y-3 xl:gap-y-4 ">
-                  {articles.map((a, index) => (
-                    <ArticleItemCard key={a.id} article={a} index={index} onItemClick={onItemClick} />
-                  ))}
-                </div>
-              ) : (
-                <div className="w-full">
-                  {articles.map((a, index) => (
-                    <ArticleHorizontalItemCard
-                      key={a.id}
-                      article={a}
-                      index={index}
-                      onItemClick={onItemClick}
-                      displayText={true}
-                    />
-                  ))}
-                </div>
-              )}
-
-              <div className="flex flex-col md:flex-row md:justify-between text-xs">
-                <ResultsPerPage defaultItemsPerPage={defaultItemsPerPage} />
-                <SearchPagination currentPage={page} totalPages={totalPages} />
+          {/* Results column */}
+          <section className="flex-1 min-w-0">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-peoplecert-border dark:border-peoplecert-navy-300">
+              <QueryResultsSummary
+                currentPage={page}
+                itemsPerPage={itemsPerPage}
+                totalItems={totalItems}
+                totalItemsReturned={articles.length}
+              />
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setFacetsOpen((v) => !v)}
+                  className="pc-btn-secondary lg:hidden"
+                >
+                  <SlidersHorizontal className="w-4 h-4" />
+                  Filters
+                </button>
+                {sortChoices.length > 0 && <SortOrder options={sortChoices} selected={sortType} />}
               </div>
-            </section>
-          </>
-        )}
-        {totalItems <= 0 && !isFetching && (
-          <div className="w-full flex justify-center">
-            <h3>0 Results</h3>
-          </div>
-        )}
-      </div>
+            </div>
+
+            <div className="w-full">
+              {articles.map((a, index) => (
+                <ArticleHorizontalItemCard
+                  key={a.id}
+                  article={a}
+                  index={index}
+                  onItemClick={onItemClick}
+                  displayText={true}
+                />
+              ))}
+            </div>
+
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-3 mt-6 pt-4 border-t border-peoplecert-border dark:border-peoplecert-navy-300">
+              <ResultsPerPage defaultItemsPerPage={defaultItemsPerPage} />
+              <SearchPagination currentPage={page} totalPages={totalPages} />
+            </div>
+          </section>
+        </div>
+      )}
+
+      {totalItems <= 0 && !isFetching && (
+        <NoResultsRecovery query={defaultKeyphrase} variant="full" />
+      )}
     </div>
   );
 };
@@ -136,7 +128,6 @@ SearchResultsComponent.propTypes = {
   defaultPage: PropTypes.number,
   defaultKeyphrase: PropTypes.string,
   defaultItemsPerPage: PropTypes.number,
-
 };
 
 const SearchResultsWidget = widget(SearchResultsComponent, WidgetDataType.SEARCH_RESULTS, 'content');
